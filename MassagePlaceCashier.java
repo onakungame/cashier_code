@@ -1,140 +1,94 @@
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
+import javax.swing.*;
 
-public class MassagePlaceCashierApp extends JFrame implements ActionListener {
-    
-    JLabel clientLabel, therapistLabel, treatmentLabel, durationLabel, dateLabel, timeLabel, totalLabel;
-    JTextField clientTextField, therapistTextField, treatmentTextField, durationTextField, dateTextField, timeTextField, totalTextField;
-    JButton submitButton;
-    String therapistNames[] = {"ucok", "bilal", "kurnia", "kotul"};
-    String treatments[] = {"urut", "pijat", "kerok"};
-    double treatmentPrices[] = {10, 15, 12};
-    
-    public MassagePlaceCashierApp() {
-        // Set up the frame
-        setTitle("Massage Place Cashier App");
-        setSize(400, 300);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+public class MassagePlaceApp extends JFrame implements ActionListener {
+
+    private JLabel title, treatment, therapist;
+    private JCheckBox urut, kerok, refleksi;
+    private JComboBox<String> therapistList;
+    private JButton submit, reset;
+    private double totalPrice = 0;
+
+    public MassagePlaceApp() {
+        super("MESIN KASIR");
+
+        // Initialize the components
+        title = new JLabel("MESIN KASIR PANTI PIJAT");
+        title.setFont(new Font("Arial", Font.BOLD, 20));
+        title.setBounds(20, 10, 300, 30);
+
+        treatment = new JLabel("Pilih jenis perawatan : ");
+        treatment.setBounds(20, 50, 200, 30);
+
+        urut = new JCheckBox("Urut (Rp 15.000)");
+        urut.setBounds(20, 80, 150, 30);
+
+        kerok = new JCheckBox("Kerok (Rp 20.000)");
+        kerok.setBounds(20, 110, 150, 30);
+
+        refleksi = new JCheckBox("Refleksi (Rp 25.000)");
+        refleksi.setBounds(20, 140, 150, 30);
+
+        therapist = new JLabel("Pilih terapis : ");
+        therapist.setBounds(20, 180, 200, 30);
+
+        String[] therapists = {"Ujang", "Sudiro", "Poltak", "Ucok"};
+        therapistList = new JComboBox<>(therapists);
+        therapistList.setBounds(20, 210, 150, 30);
+
+        submit = new JButton("Submit");
+        submit.setBounds(20, 250, 100, 30);
+        submit.addActionListener(this);
+
+        reset = new JButton("Reset");
+        reset.setBounds(130, 250, 100, 30);
+        reset.addActionListener(this);
+
+        // Add the components to the frame
+        add(title);
+        add(treatment);
+        add(urut);
+        add(kerok);
+        add(refleksi);
+        add(therapist);
+        add(therapistList);
+        add(submit);
+        add(reset);
+
+        // Set the frame properties
         setLayout(null);
-        
-        // Add labels and text fields for client, therapist, treatment, duration, date, time, and total
-        clientLabel = new JLabel("Client Name:");
-        therapistLabel = new JLabel("Therapist Name:");
-        treatmentLabel = new JLabel("Treatment:");
-        durationLabel = new JLabel("Duration:");
-        dateLabel = new JLabel("Date:");
-        timeLabel = new JLabel("Time:");
-        totalLabel = new JLabel("Total:");
-        
-        clientTextField = new JTextField();
-        therapistTextField = new JTextField();
-        treatmentTextField = new JTextField();
-        durationTextField = new JTextField();
-        dateTextField = new JTextField();
-        timeTextField = new JTextField();
-        totalTextField = new JTextField();
-        
-        // Set the location and size of each component
-        clientLabel.setBounds(10, 20, 100, 20);
-        clientTextField.setBounds(120, 20, 200, 20);
-        
-        therapistLabel.setBounds(10, 50, 100, 20);
-        therapistTextField.setBounds(120, 50, 200, 20);
-        
-        treatmentLabel.setBounds(10, 80, 100, 20);
-        treatmentTextField.setBounds(120, 80, 200, 20);
-        
-        durationLabel.setBounds(10, 110, 100, 20);
-        durationTextField.setBounds(120, 110, 200, 20);
-        
-        dateLabel.setBounds(10, 140, 100, 20);
-        dateTextField.setBounds(120, 140, 200, 20);
-        
-        timeLabel.setBounds(10, 170, 100, 20);
-        timeTextField.setBounds(120, 170, 200, 20);
-        
-        totalLabel.setBounds(10, 200, 100, 20);
-        totalTextField.setBounds(120, 200, 200, 20);
-        totalTextField.setEditable(false);
-        
-        // Add a submit button
-        submitButton = new JButton("Submit");
-        submitButton.setBounds(150, 230, 100, 30);
-        submitButton.addActionListener(this);
-        
-        // Add all the components to the frame
-        add(clientLabel);
-        add(clientTextField);
-        add(therapistLabel);
-        add(therapistTextField);
-        add(treatmentLabel);
-        add(treatmentTextField);
-        add(durationLabel);
-        add(durationTextField);
-        add(dateLabel);
-        add(dateTextField);
-        add(timeLabel);
-        add(timeTextField);
-        add(totalLabel);
-        add(totalTextField);
-        add(submitButton);
-    
-    // Display the frame
-    setVisible(true);
-}
+        setVisible(true);
+        setSize(300, 350);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    }
 
-@Override
-public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == submitButton) {
-        // Calculate the total price based on the selected treatment and duration
-        int duration = Integer.parseInt(durationTextField.getText());
-        double price = 0;
-        switch (treatmentTextField.getText()) {
-            case "urut":
-                price = treatmentPrices[0];
-                break;
-            case "pijat":
-                price = treatmentPrices[1];
-                break;
-            case "kerok":
-                price = treatmentPrices[2];
-                break;
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == submit) {
+            totalPrice = 0;
+
+            if (urut.isSelected()) {
+                totalPrice += 15000;
+            }
+            if (kerok.isSelected()) {
+                totalPrice += 20000;
+            }
+            if (refleksi.isSelected()) {
+                totalPrice += 25000;
+            }
+
+            JOptionPane.showMessageDialog(this, "Total Harga : Rp " + totalPrice);
+        } else if (e.getSource() == reset) {
+            urut.setSelected(false);
+            kerok.setSelected(false);
+            refleksi.setSelected(false);
+            therapistList.setSelectedIndex(0);
         }
-        double total = price * duration;
-        
-        // Set the total price in the total text field
-        totalTextField.setText("$" + total);
     }
-}
 
-public static void main(String[] args) {
-    // Create a new instance of the app
-    MassagePlaceCashierApp app = new MassagePlaceCashierApp();
-    
-    // Set the therapist names as options for the therapist text field
-    String therapistOptions = "";
-    for (String therapist : app.therapistNames) {
-        therapistOptions += therapist + ",";
+    public static void main(String[] args) {
+        new MassagePlaceApp();
     }
-    app.therapistTextField.setText(therapistOptions.substring(0, therapistOptions.length() - 1));
-    
-    // Set the treatment names as options for the treatment text field
-    String treatmentOptions = "";
-    for (String treatment : app.treatments) {
-        treatmentOptions += treatment + ",";
-    }
-    app.treatmentTextField.setText(treatmentOptions.substring(0, treatmentOptions.length() - 1));
-    
-    // Set the current date and time in the date and time text fields
-    Date now = new Date();
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    app.dateTextField.setText(dateFormat.format(now));
-    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-    app.timeTextField.setText(timeFormat.format(now));
 }
